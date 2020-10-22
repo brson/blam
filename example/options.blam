@@ -1,0 +1,66 @@
+table Exchanges {
+    name: String,
+    lot_size: Integer,
+    fractional_contract_factor: Float,
+}
+
+table Accounts {
+    name: String,
+    exchange: String,
+}
+
+join AccountViewJoin {
+    from Accounts,
+    from Exchanges,
+    where eq_S(Accounts.exchange, Exchanges.name),
+}
+
+selection AccountView {
+    from AccountViewJoin
+} {
+    name: String = Accounts.name,
+    exchange: String = Accounts.exchange,
+    lot_size: Integer = Exchanges.lot_size,
+    fractional_contract_factor: Float = Exchanges.fractional_contract_factor,
+}
+
+table Spy {
+    date: Date,
+    closing_price: Float,
+}
+
+table Txns {
+    account: String,
+    symbol: String,
+    opening_date: Date,
+    expiration_date: Date,
+    callput: String { "Call" | "Put" },
+    buysell: String { "Buy" | "Sell" },
+    commission: Float,
+}
+
+join TxnViewJoin {
+    from Txns,
+    from AccountView,
+    from Spy as OpeningSpy,
+    from Spy as ExpirationSpy,
+    where eq_S(Txns.account, AccountView.name),
+    where eq_D(Txns.opening_date, OpeningSpy.date),
+    where eq_D(Txns.expiration_date, ExpirationSpy.date),
+}
+
+selection TxnView {
+    from TxnViewJoin,
+} {
+    account: Txns.account,
+    symbol: Txns.symbol,
+    opening_date: Txns.opening_date,
+    expiration_date: Txns.expiration_date,
+    callput: Txns.callput,
+    buysell: Txns.buysell,
+    commission: Txns.commission,
+    lot_size: AccountView.lot_size,
+    fractional_contract_factor: AccountView.fractional_contract_factor,
+    opening_spy_price: OpeningSpy.closing_price,
+}
+

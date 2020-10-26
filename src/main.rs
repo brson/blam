@@ -24,6 +24,7 @@ struct Column {
     name: String,
     data: ColumnData,
     unique_key: bool,
+    foreign_key: Option<(String, String)>,
 }
 
 #[derive(Clone)]
@@ -138,11 +139,16 @@ impl Table {
                 name: column_name,
                 data: column.data.clone(),
                 unique_key: column.unique_key,
+                foreign_key: column.foreign_key.clone(),
             };
 
             old_columns.push(new_column);
 
             if column.unique_key {
+                panic!()
+            }
+
+            if column.name == join_self_column.name {
                 panic!()
             }
         }

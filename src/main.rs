@@ -138,7 +138,7 @@ impl Table {
         let mut old_columns = Vec::new();
         let mut new_columns = Vec::new();
         let mut name_to_idx = BTreeMap::new();
-        let mut unique_indexes = self.unique_indexes.clone();
+        let mut unique_indexes = BTreeMap::new();
 
         for (column_idx, column) in self.columns.iter().enumerate() {
             let column_name = format!("{}.{}", self.name, column.name);
@@ -151,6 +151,22 @@ impl Table {
 
             old_columns.push(new_column);
             name_to_idx.insert(column_name, column_idx);
+        }
+
+        unique_indexes.extend(self.unique_indexes.clone().into_iter());
+
+        for (orig_column_idx, column) in other.columns.iter().enumerate() {
+            let new_column_idx = self.columns.len() + orig_column_idx;
+            let column_name = format!("{}.{}", other.name, column.name);
+            let new_column = Column {
+                name: column_name.clone(),
+                data: panic!(),
+                unique_key: false,
+                foreign_key: column.foreign_key.clone(),
+            };
+
+            new_columns.push(new_column);
+            name_to_idx.insert(column_name, new_column_idx);
         }
 
         match join_self_column.data {

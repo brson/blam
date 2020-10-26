@@ -153,6 +153,15 @@ impl Table {
             name_to_idx.insert(column_name, column_idx);
         }
 
+        match join_self_column.data {
+            ColumnData::Integer(ref keys) => {
+                for key in keys {
+                    panic!()
+                }
+            }
+            _ => panic!()
+        }
+
         old_columns.extend(new_columns.into_iter());
 
         let columns = old_columns;

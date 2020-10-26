@@ -1,0 +1,7 @@
+use std::str::FromStr;
+
+grammar;
+
+pub Table: i32 = {
+   "1" => 1,
+};

@@ -8,7 +8,7 @@ table Exchanges {
 table Accounts {
     #[unique_key]
     name: String,
-    #[foreign_key(Exchanges.name)
+    #[foreign_key(Exchanges.name)]
     exchange: String,
 }
 

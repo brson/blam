@@ -69,5 +69,6 @@ view TxnView {
     lot_size: AccountView.lot_size,
     fractional_contract_factor: AccountView.fractional_contract_factor,
     opening_spy_price: OpeningSpy.closing_price,
+    closing_spy_price: ClosingSpy.closing_price,
 }
 

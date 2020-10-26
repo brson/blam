@@ -50,6 +50,7 @@ enum UniqueIndex {
 struct JoinCriteria {
     self_column: ColumnName,
     other_column: ColumnName,
+    table_rename: Option<String>,
 }
 
 struct SelectCriteria {
@@ -162,9 +163,10 @@ impl Table {
 
         unique_indexes.extend(self.unique_indexes.clone().into_iter());
 
+        let other_name = crit.table_rename.as_ref().unwrap_or(&other.name);
         for (orig_column_idx, column) in other.columns.iter().enumerate() {
             let new_column_idx = self.columns.len() + orig_column_idx;
-            let column_name = format!("{}.{}", other.name, column.name);
+            let column_name = format!("{}.{}", other_name, column.name);
             let data = match column.data {
                 ColumnData::Integer(_) => ColumnData::Integer(Vec::new()),
                 ColumnData::Float(_) => ColumnData::Float(Vec::new()),

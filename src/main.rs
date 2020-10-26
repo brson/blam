@@ -192,6 +192,7 @@ impl Table {
                                     ColumnData::Integer(ref source) => source.get(row).expect("row"),
                                     _ => unreachable!(),
                                 };
+                                dest.push(data.clone());
                             }
                             _ => panic!(),
                         }

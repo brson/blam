@@ -134,22 +134,29 @@ impl Table {
                    join_other_column.name);
         assert!(join_other_column.unique_key);
 
-        let mut rows = 0;
+        let mut rows = None;
         let mut old_columns = Vec::new();
         let mut new_columns = Vec::new();
         let mut name_to_idx = BTreeMap::new();
         let mut unique_indexes = BTreeMap::new();
 
         for (column_idx, column) in self.columns.iter().enumerate() {
+            let new_rows = column.len();
+            if let Some(rows) = rows {
+                assert_eq!(rows, new_rows);
+            }
+            rows = Some(new_rows);
+
             let column_name = format!("{}.{}", self.name, column.name);
             let new_column = Column {
-                name: column_name,
+                name: column_name.clone(),
                 data: column.data.clone(),
                 unique_key: column.unique_key,
                 foreign_key: column.foreign_key.clone(),
             };
 
             old_columns.push(new_column);
+            name_to_idx.insert(column_name, column_idx);
 
             if column.unique_key {
                 let unique_index = self.unique_indexes.get(&column_idx).expect("unique_idx");
@@ -163,6 +170,7 @@ impl Table {
 
         old_columns.extend(new_columns.into_iter());
 
+        let rows = rows.unwrap_or(0);
         let columns = old_columns;
 
         Table {

@@ -8,6 +8,7 @@ table Exchanges {
 table Accounts {
     #[unique_key]
     name: String,
+    #[foreign_key(Exchanges.name)
     exchange: String,
 }
 
@@ -33,9 +34,12 @@ table Spy {
 }
 
 table Txns {
+    #[foreign_key(Account.name)
     account: String,
     symbol: String,
+    #[foreign_key(Spy.date)
     opening_date: Date,
+    #[foreign_key(Spy.date)
     expiration_date: Date,
     callput: String { "Call" | "Put" },
     buysell: String { "Buy" | "Sell" },

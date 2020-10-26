@@ -45,6 +45,8 @@ enum UniqueIndex {
 struct JoinCriteria {
     self_column: String,
     other_column: String,
+    self_name: String,
+    other_name: String,
 }
 
 struct SelectCriteria {
@@ -73,28 +75,28 @@ impl Table {
                     ColumnData::Integer(ref key_column) => {
                         let mut index = BTreeMap::new();
                         for (row_idx, key) in key_column.iter().enumerate() {
-                            index.insert(key.clone(), row_idx);
+                            assert!(index.insert(key.clone(), row_idx).is_none());
                         }
                         UniqueIndex::Integer(index)
                     }
                     ColumnData::Float(ref key_column) => {
                         let mut index = BTreeMap::new();
                         for (row_idx, key) in key_column.iter().enumerate() {
-                            index.insert(FloatOrd(key.clone()), row_idx);
+                            assert!(index.insert(FloatOrd(key.clone()), row_idx).is_none());
                         }
                         UniqueIndex::Float(index)
                     }
                     ColumnData::String(ref key_column) => {
                         let mut index = BTreeMap::new();
                         for (row_idx, key) in key_column.iter().enumerate() {
-                            index.insert(key.clone(), row_idx);
+                            assert!(index.insert(key.clone(), row_idx).is_none());
                         }
                         UniqueIndex::String(index)
                     }
                     ColumnData::Date(ref key_column) => {
                         let mut index = BTreeMap::new();
                         for (row_idx, key) in key_column.iter().enumerate() {
-                            index.insert(key.clone(), row_idx);
+                            assert!(index.insert(key.clone(), row_idx).is_none());
                         }
                         UniqueIndex::Date(index)
                     }
@@ -121,7 +123,40 @@ impl Table {
         let join_self_column = self.columns.get(join_self_column_idx).expect("self_idx");
         let join_other_column = self.columns.get(join_other_column_idx).expect("other_idx");
 
-        panic!()
+        assert!(join_other_column.unique_key);
+
+        let mut rows = 0;
+        let mut old_columns = Vec::new();
+        let mut new_columns = Vec::new();
+        let mut name_to_idx = BTreeMap::new();
+        let mut unique_indexes = BTreeMap::new();
+
+        for column in &self.columns {
+            let table_name = &crit.self_name;
+            let column_name = format!("{}.{}", table_name, column.name);
+            let new_column = Column {
+                name: column_name,
+                data: column.data.clone(),
+                unique_key: column.unique_key,
+            };
+
+            old_columns.push(new_column);
+
+            if column.unique_key {
+                panic!()
+            }
+        }
+
+        old_columns.extend(new_columns.into_iter());
+
+        let columns = old_columns;
+
+        Table {
+            rows,
+            columns,
+            name_to_idx,
+            unique_indexes,
+        }
     }
 
     fn select(&self, crit: SelectCriteria) -> Table { panic!() }

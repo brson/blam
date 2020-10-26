@@ -1,18 +1,20 @@
 table Exchanges {
+    #[unique_key]
     name: String,
     lot_size: Integer,
     fractional_contract_factor: Float,
 }
 
 table Accounts {
+    #[unique_key]
     name: String,
     exchange: String,
 }
 
 join AccountViewJoin {
     from Accounts,
-    from Exchanges,
-    where eq_S(Accounts.exchange, Exchanges.name),
+    with Exchanges,
+    where Accounts.exchange is Exchanges.name,
 }
 
 view AccountView {
@@ -25,6 +27,7 @@ view AccountView {
 }
 
 table Spy {
+    #[unique_key]
     date: Date,
     closing_price: Float,
 }
@@ -41,12 +44,12 @@ table Txns {
 
 join TxnViewJoin {
     from Txns,
-    from AccountView,
-    from Spy as OpeningSpy,
-    from Spy as ExpirationSpy,
-    where eq_S(Txns.account, AccountView.name),
-    where eq_D(Txns.opening_date, OpeningSpy.date),
-    where eq_D(Txns.expiration_date, ExpirationSpy.date),
+    with AccountView,
+    with Spy as OpeningSpy,
+    with Spy as ExpirationSpy,
+    where Txns.account is AccountView.name,
+    where Txns.opening_date is OpeningSpy.date,
+    where Txns.expiration_date is ExpirationSpy.date,
 }
 
 view TxnView {

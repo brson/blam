@@ -10,5 +10,19 @@ pub Schema: Schema = {
 };
 
 pub Relation: Relation = {
-    "0" => Relation::Join(Join { name: "foo".to_string() }),
+    Table => Relation::Table(<>),
+    Join => Relation::Join(<>),
+    View => Relation::View(<>),
+}
+
+pub Table: Table = {
+    "table" => panic!(),
+}
+
+pub Join: Join = {
+    "join" => panic!(),
+}
+
+pub View: View = {
+    "view" => panic!(),
 }

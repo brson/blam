@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use crate::parser::ast::{Schema, Relation, Table, Join, View, TableColumn};
+use crate::parser::ast::{Schema, Relation, Table, Join, View, TableColumn, TableColumnProp, Path};
 
 grammar;
 
@@ -27,12 +27,16 @@ pub TableColumns: Vec<TableColumn> = {
 }
 
 pub TableColumn: TableColumn = {
-    <n:Name> ":" <t: Type> => TableColumn {
+    <p:TableColumnProp?> <n:Name> ":" <t: Type> => TableColumn {
         name: n,
         type_: t,
-        unique_key: false,
-        foreign_key: None,
+        prop: p,
     }
+}
+
+pub TableColumnProp: TableColumnProp = {
+    "#[" "unique_key" "]" => TableColumnProp::UniqueKey,
+    "#[" "foreign_key" "(" <p:Path> ")" "]" => TableColumnProp::ForeignKey(p),
 }
 
 pub Join: Join = {
@@ -53,4 +57,11 @@ pub Type: String = {
 
 pub AlphaNumeric: String = {
     <r"[[::alpha:]][[:alnum:]]*"> => <>.to_string(),
+}
+
+pub Path: Path = {
+    <t: Name> "." <c: Name> => Path {
+        table: t,
+        column: c,
+    }
 }

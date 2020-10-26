@@ -20,13 +20,19 @@ pub struct Table {
 pub struct TableColumn {
     pub name: String,
     pub type_: String,
-    pub unique_key: bool,
-    pub foreign_key: Option<Path>,
+    pub prop: Option<TableColumnProp>,
+}
+
+#[derive(Debug)]
+pub enum TableColumnProp {
+    UniqueKey,
+    ForeignKey(Path),
 }
 
 #[derive(Debug)]
 pub struct Path {
-    pub pieces: Vec<String>,
+    pub table: String,
+    pub column: String,
 }
 
 #[derive(Debug)]

@@ -211,9 +211,9 @@ impl Table {
             }
         };
 
+        let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
         match join_self_column.data {
             ColumnData::Integer(ref keys) => {
-                let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
                 let index = match index {
                     UniqueIndex::Integer(ref i) => i,
                     _ => unreachable!(),
@@ -223,7 +223,36 @@ impl Table {
                     copy_row(row);
                 }
             }
-            _ => panic!()
+            ColumnData::Float(ref keys) => {
+                let index = match index {
+                    UniqueIndex::Float(ref i) => i,
+                    _ => unreachable!(),
+                };
+                for key in keys {
+                    let row = *index.get(&FloatOrd(*key)).expect("foreign key");
+                    copy_row(row);
+                }
+            }
+            ColumnData::String(ref keys) => {
+                let index = match index {
+                    UniqueIndex::String(ref i) => i,
+                    _ => unreachable!(),
+                };
+                for key in keys {
+                    let row = *index.get(key).expect("foreign key");
+                    copy_row(row);
+                }
+            }
+            ColumnData::Date(ref keys) => {
+                let index = match index {
+                    UniqueIndex::Date(ref i) => i,
+                    _ => unreachable!(),
+                };
+                for key in keys {
+                    let row = *index.get(key).expect("foreign key");
+                    copy_row(row);
+                }
+            }
         }
 
         old_columns.extend(new_columns.into_iter());

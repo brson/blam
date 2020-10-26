@@ -140,7 +140,7 @@ impl Table {
         let mut name_to_idx = BTreeMap::new();
         let mut unique_indexes = BTreeMap::new();
 
-        for column in &self.columns {
+        for (column_idx, column) in self.columns.iter().enumerate() {
             let column_name = format!("{}.{}", self.name, column.name);
             let new_column = Column {
                 name: column_name,
@@ -152,7 +152,8 @@ impl Table {
             old_columns.push(new_column);
 
             if column.unique_key {
-                panic!()
+                let unique_index = self.unique_indexes.get(&column_idx).expect("unique_idx");
+                unique_indexes.insert(column_idx, unique_index.clone());
             }
 
             if column.name == join_self_column.name {

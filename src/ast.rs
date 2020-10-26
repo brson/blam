@@ -9,24 +9,24 @@ pub enum Relation {
 }
 
 pub struct Table {
-    name: String,
-    columns: TableColumn,
+    pub name: String,
+    pub columns: TableColumn,
 }
 
 pub struct TableColumn {
-    name: String,
-    unique_key: bool,
-    foreign_key: Option<Path>,
+    pub name: String,
+    pub unique_key: bool,
+    pub foreign_key: Option<Path>,
 }
 
 pub struct Path {
-    pieces: Vec<String>,
+    pub pieces: Vec<String>,
 }
 
 pub struct Join {
-    name: String,
+    pub name: String,
 }
 
 pub struct View {
-    name: String,
+    pub name: String,
 }

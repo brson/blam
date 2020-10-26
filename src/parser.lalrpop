@@ -1,7 +1,14 @@
 use std::str::FromStr;
+use crate::parser::ast::{Schema, Relation, Table, Join, View};
 
 grammar;
 
-pub Table: i32 = {
-   "1" => 1,
+pub Schema: Schema = {
+    <r:Relation*> => Schema {
+        rels: r,
+    }
 };
+
+pub Relation: Relation = {
+    "0" => Relation::Join(Join { name: "foo".to_string() }),
+}

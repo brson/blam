@@ -158,6 +158,12 @@ impl Table {
         for (orig_column_idx, column) in other.columns.iter().enumerate() {
             let new_column_idx = self.columns.len() + orig_column_idx;
             let column_name = format!("{}.{}", other.name, column.name);
+            let data = match column.data {
+                ColumnData::Integer(_) => ColumnData::Integer(Vec::new()),
+                ColumnData::Float(_) => ColumnData::Float(Vec::new()),
+                ColumnData::String(_) => ColumnData::String(Vec::new()),
+                ColumnData::Date(_) => ColumnData::Date(Vec::new()),
+            };
             let new_column = Column {
                 name: column_name.clone(),
                 data: panic!(),

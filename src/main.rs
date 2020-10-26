@@ -186,7 +186,27 @@ impl Table {
                         };
                         dest.push(data.clone());
                     }
-                    _ => panic!(),
+                    ColumnData::Float(ref mut dest) => {
+                        let data: &Float = match column.data {
+                            ColumnData::Float(ref source) => source.get(row).expect("row"),
+                            _ => unreachable!(),
+                        };
+                        dest.push(data.clone());
+                    }
+                    ColumnData::String(ref mut dest) => {
+                        let data: &String = match column.data {
+                            ColumnData::String(ref source) => source.get(row).expect("row"),
+                            _ => unreachable!(),
+                        };
+                        dest.push(data.clone());
+                    }
+                    ColumnData::Date(ref mut dest) => {
+                        let data: &Date = match column.data {
+                            ColumnData::Date(ref source) => source.get(row).expect("row"),
+                            _ => unreachable!(),
+                        };
+                        dest.push(data.clone());
+                    }
                 }
             }
         };

@@ -55,6 +55,7 @@ struct JoinCriteria {
 }
 
 struct SelectCriteria {
+    new_table_name: TableName,
     columns: Vec<ColumnName>,
 }
 
@@ -287,6 +288,20 @@ impl Table {
     }
 
     fn select(&self, crit: SelectCriteria) -> Table {
-        panic!()
+        let name = crit.new_table_name;
+        let rows = self.rows;
+        let mut columns = Vec::new();
+        let mut name_to_idx = BTreeMap::new();
+        let mut unique_indexes = BTreeMap::new();
+
+        panic!();
+
+        Table {
+            name,
+            rows,
+            columns,
+            name_to_idx,
+            unique_indexes,
+        }
     }
 }

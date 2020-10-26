@@ -134,19 +134,13 @@ impl Table {
                    join_other_column.name);
         assert!(join_other_column.unique_key);
 
-        let mut rows = None;
+        let rows = self.rows;
         let mut old_columns = Vec::new();
         let mut new_columns = Vec::new();
         let mut name_to_idx = BTreeMap::new();
-        let mut unique_indexes = BTreeMap::new();
+        let mut unique_indexes = self.unique_indexes.clone();
 
         for (column_idx, column) in self.columns.iter().enumerate() {
-            let new_rows = column.len();
-            if let Some(rows) = rows {
-                assert_eq!(rows, new_rows);
-            }
-            rows = Some(new_rows);
-
             let column_name = format!("{}.{}", self.name, column.name);
             let new_column = Column {
                 name: column_name.clone(),
@@ -157,20 +151,10 @@ impl Table {
 
             old_columns.push(new_column);
             name_to_idx.insert(column_name, column_idx);
-
-            if column.unique_key {
-                let unique_index = self.unique_indexes.get(&column_idx).expect("unique_idx");
-                unique_indexes.insert(column_idx, unique_index.clone());
-            }
-
-            if column.name == join_self_column.name {
-                panic!()
-            }
         }
 
         old_columns.extend(new_columns.into_iter());
 
-        let rows = rows.unwrap_or(0);
         let columns = old_columns;
 
         Table {

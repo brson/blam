@@ -11,6 +11,7 @@ name = "blam"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "float-ord",
 ]
 
 [[package]]
@@ -25,6 +26,12 @@ dependencies = [
  "time",
  "winapi",
 ]
+
+[[package]]
+name = "float-ord"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7bad48618fdb549078c333a7a8528acb57af271d0433bdecd523eb620628364e"
 
 [[package]]
 name = "libc"

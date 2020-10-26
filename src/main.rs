@@ -30,9 +30,37 @@ enum ColumnData {
 }
 
 struct JoinCriteria {
+    
 }
 
 struct SelectCriteria {
+}
+
+impl Column {
+    fn len(&self) -> usize { panic!() }
+}
+
+impl Table {
+    fn from_columns(columns: Vec<Column>) -> Table {
+        let mut rows = None;
+        let mut name_to_idx = BTreeMap::new();
+        for (idx, column) in columns.iter().enumerate() {
+            let new_rows = column.len();
+            if let Some(rows) = rows {
+                assert_eq!(rows, new_rows);
+            }
+            rows = Some(new_rows);
+            name_to_idx.insert(column.name.clone(), idx);
+        }
+
+        let rows = rows.unwrap_or(0);
+
+        Table {
+            rows,
+            columns,
+            name_to_idx,
+        }
+    }
 }
 
 impl Table {

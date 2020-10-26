@@ -13,6 +13,7 @@ type Float = f64;
 type Date = chrono::Date<chrono::Utc>;
 
 struct Table {
+    name: String,
     rows: usize,
     columns: Vec<Column>,
     name_to_idx: BTreeMap<String, usize>,
@@ -46,8 +47,6 @@ enum UniqueIndex {
 struct JoinCriteria {
     self_column: String,
     other_column: String,
-    self_name: String,
-    other_name: String,
 }
 
 struct SelectCriteria {
@@ -58,7 +57,7 @@ impl Column {
 }
 
 impl Table {
-    fn from_columns(columns: Vec<Column>) -> Table {
+    fn from_columns(name: String, columns: Vec<Column>) -> Table {
         let mut rows = None;
         let mut name_to_idx = BTreeMap::new();
         let mut unique_indexes = BTreeMap::new();
@@ -109,6 +108,7 @@ impl Table {
         let rows = rows.unwrap_or(0);
 
         Table {
+            name,
             rows,
             columns,
             name_to_idx,
@@ -118,7 +118,7 @@ impl Table {
 }
 
 impl Table {
-    fn join(&self, other: &Table, crit: JoinCriteria) -> Table {
+    fn join(&self, name: String, other: &Table, crit: JoinCriteria) -> Table {
         let join_self_column_idx = *self.name_to_idx.get(&crit.self_column).expect("self_column");
         let join_other_column_idx = *self.name_to_idx.get(&crit.other_column).expect("other_column");
         let join_self_column = self.columns.get(join_self_column_idx).expect("self_idx");
@@ -133,8 +133,7 @@ impl Table {
         let mut unique_indexes = BTreeMap::new();
 
         for column in &self.columns {
-            let table_name = &crit.self_name;
-            let column_name = format!("{}.{}", table_name, column.name);
+            let column_name = format!("{}.{}", self.name, column.name);
             let new_column = Column {
                 name: column_name,
                 data: column.data.clone(),
@@ -158,6 +157,7 @@ impl Table {
         let columns = old_columns;
 
         Table {
+            name,
             rows,
             columns,
             name_to_idx,

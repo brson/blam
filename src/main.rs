@@ -294,7 +294,18 @@ impl Table {
         let mut name_to_idx = BTreeMap::new();
         let mut unique_indexes = BTreeMap::new();
 
-        panic!();
+        for (new_column_idx, column_name) in crit.columns.into_iter().enumerate() {
+            let old_column_idx = *self.name_to_idx.get(&column_name).expect("column");
+            let old_column = self.columns.get(old_column_idx).expect("column");
+            let maybe_unique_index = self.unique_indexes.get(&old_column_idx);
+
+            columns.push(old_column.clone());
+            name_to_idx.insert(column_name, new_column_idx);
+
+            if let Some(unique_index) = maybe_unique_index {
+                unique_indexes.insert(new_column_idx, unique_index.clone());
+            }
+        }
 
         Table {
             name,

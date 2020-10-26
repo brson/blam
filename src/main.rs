@@ -56,7 +56,14 @@ struct SelectCriteria {
 }
 
 impl Column {
-    fn len(&self) -> usize { panic!() }
+    fn len(&self) -> usize {
+        match self.data {
+            ColumnData::Integer(ref v) => v.len(),
+            ColumnData::Float(ref v) => v.len(),
+            ColumnData::String(ref v) => v.len(),
+            ColumnData::Date(ref v) => v.len(),
+        }
+    }
 }
 
 impl Table {

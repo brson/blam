@@ -166,7 +166,7 @@ impl Table {
             };
             let new_column = Column {
                 name: column_name.clone(),
-                data: panic!(),
+                data,
                 unique_key: false,
                 foreign_key: column.foreign_key.clone(),
             };
@@ -180,11 +180,22 @@ impl Table {
                 let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
                 let index = match index {
                     UniqueIndex::Integer(ref i) => i,
-                    _ => panic!(),
+                    _ => unreachable!(),
                 };
                 for key in keys {
-                    let row = index.get(key).expect("foreign key");
-                    panic!()
+                    let row = *index.get(key).expect("foreign key");
+                    for (column_idx, column) in other.columns.iter().enumerate() {
+                        let mut new_column = new_columns.get_mut(column_idx).expect("column");
+                        match new_column.data {
+                            ColumnData::Integer(ref mut dest) => {
+                                let data = match column.data {
+                                    ColumnData::Integer(ref source) => source.get(row).expect("row"),
+                                    _ => unreachable!(),
+                                };
+                            }
+                            _ => panic!(),
+                        }
+                    }
                 }
             }
             _ => panic!()

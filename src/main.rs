@@ -124,6 +124,11 @@ impl Table {
         let join_self_column = self.columns.get(join_self_column_idx).expect("self_idx");
         let join_other_column = self.columns.get(join_other_column_idx).expect("other_idx");
 
+        assert!(join_self_column.foreign_key.is_some());
+        assert_eq!(join_self_column.foreign_key.as_ref().unwrap().0,
+                   other.name);
+        assert_eq!(join_self_column.foreign_key.as_ref().unwrap().1,
+                   join_other_column.name);
         assert!(join_other_column.unique_key);
 
         let mut rows = 0;

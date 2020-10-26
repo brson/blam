@@ -17,11 +17,13 @@ struct Table {
     name_to_idx: BTreeMap<String, usize>,
 }
 
+#[derive(Clone)]
 struct Column {
     name: String,
     data: ColumnData,
 }
 
+#[derive(Clone)]
 enum ColumnData {
     Integer(Vec<Integer>),
     Float(Vec<Float>),
@@ -30,7 +32,8 @@ enum ColumnData {
 }
 
 struct JoinCriteria {
-    
+    self_column: String,
+    other_column: String,
 }
 
 struct SelectCriteria {
@@ -64,6 +67,14 @@ impl Table {
 }
 
 impl Table {
-    fn join(&self, other: &Table, crit: JoinCriteria) -> Table { panic!() }
+    fn join(&self, other: &Table, crit: JoinCriteria) -> Table {
+        let join_self_column_idx = *self.name_to_idx.get(&crit.self_column).expect("self_column");
+        let join_other_column_idx = *self.name_to_idx.get(&crit.other_column).expect("other_column");
+        let join_self_column = self.columns.get(join_self_column_idx).expect("self_idx");
+        let join_other_column = self.columns.get(join_other_column_idx).expect("other_idx");
+
+        panic!()
+    }
+
     fn select(&self, crit: SelectCriteria) -> Table { panic!() }
 }

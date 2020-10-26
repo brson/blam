@@ -175,6 +175,22 @@ impl Table {
             name_to_idx.insert(column_name, new_column_idx);
         }
 
+        let mut copy_row = |row| {
+            for (column_idx, column) in other.columns.iter().enumerate() {
+                let mut new_column = new_columns.get_mut(column_idx).expect("column");
+                match new_column.data {
+                    ColumnData::Integer(ref mut dest) => {
+                        let data: &Integer = match column.data {
+                            ColumnData::Integer(ref source) => source.get(row).expect("row"),
+                            _ => unreachable!(),
+                        };
+                        dest.push(data.clone());
+                    }
+                    _ => panic!(),
+                }
+            }
+        };
+
         match join_self_column.data {
             ColumnData::Integer(ref keys) => {
                 let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
@@ -184,19 +200,7 @@ impl Table {
                 };
                 for key in keys {
                     let row = *index.get(key).expect("foreign key");
-                    for (column_idx, column) in other.columns.iter().enumerate() {
-                        let mut new_column = new_columns.get_mut(column_idx).expect("column");
-                        match new_column.data {
-                            ColumnData::Integer(ref mut dest) => {
-                                let data = match column.data {
-                                    ColumnData::Integer(ref source) => source.get(row).expect("row"),
-                                    _ => unreachable!(),
-                                };
-                                dest.push(data.clone());
-                            }
-                            _ => panic!(),
-                        }
-                    }
+                    copy_row(row);
                 }
             }
             _ => panic!()

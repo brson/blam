@@ -15,8 +15,8 @@ join AccountViewJoin {
     where eq_S(Accounts.exchange, Exchanges.name),
 }
 
-selection AccountView {
-    from AccountViewJoin
+view AccountView {
+    from AccountExchangeJoin
 } {
     name: String = Accounts.name,
     exchange: String = Accounts.exchange,
@@ -49,7 +49,7 @@ join TxnViewJoin {
     where eq_D(Txns.expiration_date, ExpirationSpy.date),
 }
 
-selection TxnView {
+view TxnView {
     from TxnViewJoin,
 } {
     account: Txns.account,

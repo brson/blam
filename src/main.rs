@@ -155,7 +155,13 @@ impl Table {
 
         match join_self_column.data {
             ColumnData::Integer(ref keys) => {
+                let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
+                let index = match index {
+                    UniqueIndex::Integer(ref i) => i,
+                    _ => panic!(),
+                };
                 for key in keys {
+                    let row = index.get(key).expect("foreign key");
                     panic!()
                 }
             }

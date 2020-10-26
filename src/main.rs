@@ -48,12 +48,14 @@ enum UniqueIndex {
 }
 
 struct JoinCriteria {
+    new_table_name: TableName,
     self_column: ColumnName,
     other_column: ColumnName,
-    table_rename: Option<String>,
+    other_table_rename: Option<TableName>,
 }
 
 struct SelectCriteria {
+    columns: Vec<ColumnName>,
 }
 
 impl Column {
@@ -130,7 +132,7 @@ impl Table {
 
 impl Table {
     /// Join with another table by matching self foreign key to other unique key
-    fn join(&self, name: String, other: &Table, crit: JoinCriteria) -> Table {
+    fn join(&self, other: &Table, crit: JoinCriteria) -> Table {
         let join_self_column_idx = *self.name_to_idx.get(&crit.self_column).expect("self_column");
         let join_other_column_idx = *self.name_to_idx.get(&crit.other_column).expect("other_column");
         let join_self_column = self.columns.get(join_self_column_idx).expect("self_idx");
@@ -167,7 +169,7 @@ impl Table {
         unique_indexes.extend(self.unique_indexes.clone().into_iter());
 
         // Create new columns from other
-        let other_name = crit.table_rename.as_ref().unwrap_or(&other.name);
+        let other_name = crit.other_table_rename.as_ref().unwrap_or(&other.name);
         for (orig_column_idx, column) in other.columns.iter().enumerate() {
             let new_column_idx = self.columns.len() + orig_column_idx;
             let column_name = format!("{}.{}", other_name, column.name);
@@ -273,6 +275,8 @@ impl Table {
         let mut columns = old_columns;
         columns.extend(new_columns.into_iter());
 
+        let name = crit.new_table_name;
+
         Table {
             name,
             rows,
@@ -282,5 +286,7 @@ impl Table {
         }
     }
 
-    fn select(&self, crit: SelectCriteria) -> Table { panic!() }
+    fn select(&self, crit: SelectCriteria) -> Table {
+        panic!()
+    }
 }

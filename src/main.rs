@@ -129,6 +129,7 @@ impl Table {
 }
 
 impl Table {
+    /// Join with another table by matching self foreign key to other unique key
     fn join(&self, name: String, other: &Table, crit: JoinCriteria) -> Table {
         let join_self_column_idx = *self.name_to_idx.get(&crit.self_column).expect("self_column");
         let join_other_column_idx = *self.name_to_idx.get(&crit.other_column).expect("other_column");
@@ -148,6 +149,7 @@ impl Table {
         let mut name_to_idx = BTreeMap::new();
         let mut unique_indexes = BTreeMap::new();
 
+        // Copy columns from self
         for (column_idx, column) in self.columns.iter().enumerate() {
             let column_name = format!("{}.{}", self.name, column.name);
             let new_column = Column {
@@ -161,8 +163,10 @@ impl Table {
             name_to_idx.insert(column_name, column_idx);
         }
 
+        // Copy indexes from self
         unique_indexes.extend(self.unique_indexes.clone().into_iter());
 
+        // Create new columns from other
         let other_name = crit.table_rename.as_ref().unwrap_or(&other.name);
         for (orig_column_idx, column) in other.columns.iter().enumerate() {
             let new_column_idx = self.columns.len() + orig_column_idx;
@@ -184,6 +188,7 @@ impl Table {
             name_to_idx.insert(column_name, new_column_idx);
         }
 
+        // A helper for copying a row from other to new columns
         let mut copy_row = |row| {
             for (column_idx, column) in other.columns.iter().enumerate() {
                 let mut new_column = new_columns.get_mut(column_idx).expect("column");
@@ -220,6 +225,7 @@ impl Table {
             }
         };
 
+        // Iterate through the foreign key and copy every row from other
         let index = other.unique_indexes.get(&join_other_column_idx).expect("index");
         match join_self_column.data {
             ColumnData::Integer(ref keys) => {

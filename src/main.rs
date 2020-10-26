@@ -12,20 +12,23 @@ type Integer = i64;
 type Float = f64;
 type Date = chrono::Date<chrono::Utc>;
 
+type TableName = std::string::String;
+type ColumnName = std::string::String;
+
 struct Table {
-    name: String,
+    name: TableName,
     rows: usize,
     columns: Vec<Column>,
-    name_to_idx: BTreeMap<String, usize>,
+    name_to_idx: BTreeMap<ColumnName, usize>,
     unique_indexes: BTreeMap<usize, UniqueIndex>,
 }
 
 #[derive(Clone)]
 struct Column {
-    name: String,
+    name: ColumnName,
     data: ColumnData,
     unique_key: bool,
-    foreign_key: Option<(String, String)>,
+    foreign_key: Option<(TableName, ColumnName)>,
 }
 
 #[derive(Clone)]
@@ -45,8 +48,8 @@ enum UniqueIndex {
 }
 
 struct JoinCriteria {
-    self_column: String,
-    other_column: String,
+    self_column: ColumnName,
+    other_column: ColumnName,
 }
 
 struct SelectCriteria {

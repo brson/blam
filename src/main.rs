@@ -255,9 +255,8 @@ impl Table {
             }
         }
 
-        old_columns.extend(new_columns.into_iter());
-
-        let columns = old_columns;
+        let mut columns = old_columns;
+        columns.extend(new_columns.into_iter());
 
         Table {
             name,

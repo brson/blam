@@ -15,12 +15,14 @@ struct Table {
     rows: usize,
     columns: Vec<Column>,
     name_to_idx: BTreeMap<String, usize>,
+    unique_indexes: BTreeMap<usize, UniqueIndex>,
 }
 
 #[derive(Clone)]
 struct Column {
     name: String,
     data: ColumnData,
+    unique_key: bool,
 }
 
 #[derive(Clone)]
@@ -29,6 +31,14 @@ enum ColumnData {
     Float(Vec<Float>),
     String(Vec<String>),
     Date(Vec<String>),
+}
+
+#[derive(Clone)]
+enum UniqueIndex {
+    Integer(BTreeMap<Integer, usize>),
+    Float(BTreeMap<Float, usize>),
+    String(BTreeMap<String, usize>),
+    Date(BTreeMap<Date, usize>),
 }
 
 struct JoinCriteria {
@@ -47,6 +57,8 @@ impl Table {
     fn from_columns(columns: Vec<Column>) -> Table {
         let mut rows = None;
         let mut name_to_idx = BTreeMap::new();
+        let mut unique_indexes = BTreeMap::new();
+
         for (idx, column) in columns.iter().enumerate() {
             let new_rows = column.len();
             if let Some(rows) = rows {
@@ -54,6 +66,23 @@ impl Table {
             }
             rows = Some(new_rows);
             name_to_idx.insert(column.name.clone(), idx);
+
+            if column.unique_key {
+                let mut index = unique_indexes.entry(idx).or_insert_with(|| {
+                    match column.data {
+                        ColumnData::Integer(_) => {
+                            UniqueIndex::Integer(BTreeMap::new())
+                        }
+                        _ => panic!()
+                    }
+                });
+                match &column.data {
+                    ColumnData::Integer(_) => {
+                        panic!()
+                    }
+                    _ => panic!()
+                }
+            }
         }
 
         let rows = rows.unwrap_or(0);
@@ -62,6 +91,7 @@ impl Table {
             rows,
             columns,
             name_to_idx,
+            unique_indexes,
         }
     }
 }

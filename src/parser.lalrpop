@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use crate::parser::ast::{Schema, Relation, Table, Join, View, TableColumn, TableColumnProp, Path};
+use crate::parser::ast::{Schema, Relation, Table, Join, View, TableColumn, TableColumnProp, Path, Type};
 
 grammar;
 
@@ -51,10 +51,6 @@ pub Name: String = {
     <AlphaNumeric> => <>,
 }
 
-pub Type: String = {
-    <AlphaNumeric> => <>,
-}
-
 pub AlphaNumeric: String = {
     <r"[[::alpha:]][[:alnum:]]*"> => <>.to_string(),
 }
@@ -65,3 +61,11 @@ pub Path: Path = {
         column: c,
     }
 }
+
+pub Type: Type = {
+    "Integer" => Type::Integer,
+    "Float" => Type::Float,
+    "String" => Type::String,
+    "Date" => Type::Date,
+}
+

@@ -19,7 +19,7 @@ pub struct Table {
 #[derive(Debug)]
 pub struct TableColumn {
     pub name: String,
-    pub type_: String,
+    pub type_: Type,
     pub prop: Option<TableColumnProp>,
 }
 
@@ -43,4 +43,12 @@ pub struct Join {
 #[derive(Debug)]
 pub struct View {
     pub name: String,
+}
+
+#[derive(Debug)]
+pub enum Type {
+    Integer,
+    Float,
+    String,
+    Date,
 }

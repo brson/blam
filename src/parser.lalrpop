@@ -2,7 +2,7 @@ use std::str::FromStr;
 use crate::parser::ast::{
     Schema, Relation, Table, Join, View, TableColumn,
     TableColumnProp, Path, Type, JoinWith, JoinWhere,
-    JoinPreds,
+    JoinPreds, ViewPreds, ViewColumn,
 };
 
 grammar;
@@ -44,11 +44,11 @@ pub TableColumnProp: TableColumnProp = {
 }
 
 pub Join: Join = {
-    "join" <n:Name> <c:JoinPreds> => Join {
+    "join" <n:Name> <p:JoinPreds> => Join {
         name: n,
-        from: c.from,
-        with: c.with,
-        where_: c.where_,
+        from: p.from,
+        with: p.with,
+        where_: p.where_,
     }
 }
 
@@ -81,7 +81,29 @@ pub JoinWhere: JoinWhere = {
 }
 
 pub View: View = {
-    "view" => panic!(),
+    "view" <n:Name> <p:ViewPreds> <c:ViewColumns> => View {
+        name: n,
+        from: p.from,
+        columns: c,
+    }
+}
+
+pub ViewPreds: ViewPreds = {
+    "{" "from" <n:Name> "," "}" => ViewPreds {
+        from: n,
+    }
+}
+
+pub ViewColumns: Vec<ViewColumn> = {
+    "{" <c:(<ViewColumn> ",")+> "}" => c,
+}
+
+pub ViewColumn: ViewColumn = {
+    <n:Name> ":" <t:Type> "=" <fn_:Path> "," => ViewColumn {
+        name: n,
+        type_: t,
+        from_name: fn_,
+    }
 }
 
 pub Name: String = {

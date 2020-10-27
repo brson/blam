@@ -19,7 +19,7 @@ join AccountViewJoin {
 }
 
 view AccountView {
-    from AccountExchangeJoin
+    from AccountExchangeJoin,
 } {
     name: String = Accounts.name,
     exchange: String = Accounts.exchange,
@@ -59,16 +59,16 @@ join TxnViewJoin {
 view TxnView {
     from TxnViewJoin,
 } {
-    account: Txns.account,
-    symbol: Txns.symbol,
-    opening_date: Txns.opening_date,
-    expiration_date: Txns.expiration_date,
-    callput: Txns.callput,
-    buysell: Txns.buysell,
-    commission: Txns.commission,
-    lot_size: AccountView.lot_size,
-    fractional_contract_factor: AccountView.fractional_contract_factor,
-    opening_spy_price: OpeningSpy.closing_price,
-    closing_spy_price: ClosingSpy.closing_price,
+    account: String = Txns.account,
+    symbol: String = Txns.symbol,
+    opening_date: Date = Txns.opening_date,
+    expiration_date: Date = Txns.expiration_date,
+    callput: String = Txns.callput,
+    buysell: String = Txns.buysell,
+    commission: Float = Txns.commission,
+    lot_size: Integer = AccountView.lot_size,
+    fractional_contract_factor: Float = AccountView.fractional_contract_factor,
+    opening_spy_price: Float = OpeningSpy.closing_price,
+    closing_spy_price: Float = ClosingSpy.closing_price,
 }
 

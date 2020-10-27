@@ -70,8 +70,14 @@ pub struct View {
 }
 
 #[derive(Debug)]
+pub struct ViewPreds {
+    pub from: String,
+}
+
+#[derive(Debug)]
 pub struct ViewColumn {
     pub name: String,
+    pub type_: Type,
     pub from_name: Path,
 }
 

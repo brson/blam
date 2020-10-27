@@ -9,6 +9,7 @@ mod ast;
 mod table;
 mod parser;
 mod cli;
+mod typecheck;
 
 fn main() -> Result<()> {
     cli::run()

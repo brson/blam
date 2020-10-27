@@ -34,12 +34,12 @@ table Spy {
 }
 
 table Txns {
-    #[foreign_key(Account.name)
+    #[foreign_key(Account.name)]
     account: String,
     symbol: String,
-    #[foreign_key(Spy.date)
+    #[foreign_key(Spy.date)]
     opening_date: Date,
-    #[foreign_key(Spy.date)
+    #[foreign_key(Spy.date)]
     expiration_date: Date,
     callput: String { "Call" | "Put" },
     buysell: String { "Buy" | "Sell" },

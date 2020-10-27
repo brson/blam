@@ -38,11 +38,41 @@ pub struct Path {
 #[derive(Debug)]
 pub struct Join {
     pub name: String,
+    pub from: String,
+    pub with: Vec<JoinWith>,
+    pub where_: Vec<JoinWhere>,
+}
+
+#[derive(Debug)]
+pub struct JoinPreds {
+    pub from: String,
+    pub with: Vec<JoinWith>,
+    pub where_: Vec<JoinWhere>,
+}
+
+#[derive(Debug)]
+pub struct JoinWith {
+    pub name: String,
+    pub rename: Option<String>,
+}
+
+#[derive(Debug)]
+pub struct JoinWhere {
+    pub from_name: Path,
+    pub with_name: Path,
 }
 
 #[derive(Debug)]
 pub struct View {
     pub name: String,
+    pub from: String,
+    pub columns: Vec<ViewColumn>,
+}
+
+#[derive(Debug)]
+pub struct ViewColumn {
+    pub name: String,
+    pub from_name: Path,
 }
 
 #[derive(Debug)]

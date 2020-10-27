@@ -111,7 +111,7 @@ pub Name: String = {
 }
 
 pub AlphaNumeric: String = {
-    <r"[[::alpha:]][[:alnum:]]*"> => <>.to_string(),
+    <r"[[:alpha:]][[:alnum:]]*"> => <>.to_string(),
 }
 
 pub Path: Path = {

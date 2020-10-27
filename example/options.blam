@@ -19,7 +19,7 @@ join AccountViewJoin {
 }
 
 view AccountView {
-    from AccountExchangeJoin,
+    from AccountViewJoin,
 } {
     name: String = Accounts.name,
     exchange: String = Accounts.exchange,

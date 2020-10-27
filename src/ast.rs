@@ -85,11 +85,6 @@ pub struct ViewColumn {
 pub enum Type {
     Integer,
     Float,
-    String(StringType),
+    String,
     Date,
-}
-
-#[derive(Debug)]
-pub struct StringType {
-    pub variants: Vec<String>,
 }

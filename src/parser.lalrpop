@@ -99,7 +99,7 @@ pub ViewColumns: Vec<ViewColumn> = {
 }
 
 pub ViewColumn: ViewColumn = {
-    <n:Name> ":" <t:Type> "=" <fn_:Path> "," => ViewColumn {
+    <n:Name> ":" <t:Type> "=" <fn_:Path> => ViewColumn {
         name: n,
         type_: t,
         from_name: fn_,
@@ -107,11 +107,7 @@ pub ViewColumn: ViewColumn = {
 }
 
 pub Name: String = {
-    <AlphaNumeric> => <>,
-}
-
-pub AlphaNumeric: String = {
-    <r"[[:alpha:]][[:alnum:]]*"> => <>.to_string(),
+    <r"[[:alpha:]][[:alnum:]_]*"> => <>.to_string(),
 }
 
 pub Path: Path = {

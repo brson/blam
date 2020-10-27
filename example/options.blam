@@ -41,8 +41,8 @@ table Txns {
     opening_date: Date,
     #[foreign_key(Spy.date)]
     expiration_date: Date,
-    callput: String { "Call" | "Put" },
-    buysell: String { "Buy" | "Sell" },
+    callput: String,
+    buysell: String,
     commission: Float,
 }
 

@@ -1,6 +1,10 @@
 use anyhow::Result;
 use structopt::StructOpt;
 use std::path::PathBuf;
+use std::fs;
+use log::info;
+
+use crate::parser;
 
 pub fn run() -> Result<()> {
     env_logger::init();
@@ -16,12 +20,12 @@ struct Opts {
 }
 
 #[derive(StructOpt, Debug)]
-struct CommonOpts {
+enum OptCommand {
+    Parse(ParseCommand),
 }
 
 #[derive(StructOpt, Debug)]
-enum OptCommand {
-    Parse(ParseCommand),
+struct CommonOpts {
 }
 
 #[derive(StructOpt, Debug)]
@@ -45,5 +49,10 @@ fn dispatch(opts: Opts) -> Result<()> {
 }
 
 fn run_parse(cmd: Command<ParseCommand>) -> Result<()> {
-    panic!()
+    let schema = fs::read_to_string(&cmd.command.file)?;
+    let ast = parser::parse(&schema)?;
+
+    info!("{:#?}", ast);
+    
+    Ok(())
 }

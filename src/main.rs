@@ -5,6 +5,7 @@ extern crate lalrpop_util;
 
 use anyhow::Result;
 
+mod ast;
 mod table;
 mod parser;
 mod cli;

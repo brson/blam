@@ -2,7 +2,7 @@ use std::str::FromStr;
 use crate::ast::{
     Schema, Relation, Table, Join, View, TableColumn,
     TableColumnProp, Path, Type, JoinWith, JoinWhere,
-    JoinPreds, ViewPreds, ViewColumn,
+    JoinPreds, ViewPreds, ViewColumn, StringType,
 };
 
 grammar;
@@ -120,7 +120,21 @@ pub Path: Path = {
 pub Type: Type = {
     "Integer" => Type::Integer,
     "Float" => Type::Float,
-    "String" => Type::String,
+    "String" "{" <v:StringVariants> "}" => Type::String(StringType { variants: Vec::new() }),
+    "String" => Type::String(StringType { variants: Vec::new() }),
     "Date" => Type::Date,
 }
 
+pub StringVariants: Vec<String> = {
+    <h:String> <t:("|" <String>)*> => {
+        let mut t = t;
+        t.reverse();
+        t.push(h);
+        t.reverse();
+        t
+    }
+}
+
+pub String: String = {
+    <r#"".*""#> => <>.to_string(),
+}

@@ -53,7 +53,7 @@ pub Join: Join = {
 }
 
 pub JoinPreds: JoinPreds = {
-    "from" <f:Name> "," <w:(<JoinWith> ",")+> <wh:(<JoinWhere> ",")+> => {
+    "{" "from" <f:Name> "," <w:(<JoinWith> ",")+> <wh:(<JoinWhere> ",")+> "}" => {
         JoinPreds {
             from: f,
             with: w,
